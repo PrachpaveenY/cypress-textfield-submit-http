@@ -18,28 +18,22 @@ describe('Web React UI TextField', () => {
     // beforeEach
     // before
 
-        // สร้างคำสั่งเพิ่มเติมใน Cypress
     Cypress.Commands.add('checkAllElements', (xpathToElement, textToCheck) => {
-        // เพิ่มการตรวจสอบที่คุณต้องการทำที่นี่
         cy.xpath(xpathToElement, { timeout: 5000 }).should('exist');
 
         if (textToCheck !== undefined) {
             cy.xpath(xpathToElement).should('have.text', textToCheck);
         }
-        // เพิ่มการตรวจสอบอื่นๆ ตามที่คุณต้องการ
     });
 
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อกดปุ่มตาม XPath
     Cypress.Commands.add('clickElementByXPath', (xpathToElement) => {
         cy.xpath(xpathToElement).click();
     });
     
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อกรอกข้อความตาม XPath
     Cypress.Commands.add('typeTextByXPath', (xpathToElement, text) => {
         cy.xpath(xpathToElement).type(text).should('have.value', text);
     });
     
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อตรวจสอบการแจ้งเตือนตาม XPath
     Cypress.Commands.add('checkAlertByXPath', (xpathToElement, expectedText) => {
         cy.xpath(xpathToElement).should('have.text', expectedText);
     });
@@ -160,28 +154,22 @@ describe('Web UI cypress.io', () => {
     // beforeEach
     // before
 
-        // สร้างคำสั่งเพิ่มเติมใน Cypress
     Cypress.Commands.add('checkAllElements', (xpathToElement, textToCheck) => {
-        // เพิ่มการตรวจสอบที่คุณต้องการทำที่นี่
         cy.xpath(xpathToElement, { timeout: 5000 }).should('exist');
 
         if (textToCheck !== undefined) {
             cy.xpath(xpathToElement).should('have.text', textToCheck);
         }
-        // เพิ่มการตรวจสอบอื่นๆ ตามที่คุณต้องการ
     });
 
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อกดปุ่มตาม XPath
     Cypress.Commands.add('clickElementByXPath', (xpathToElement) => {
         cy.xpath(xpathToElement).click();
     });
     
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อกรอกข้อความตาม XPath
     Cypress.Commands.add('typeTextByXPath', (xpathToElement, text) => {
         cy.xpath(xpathToElement).type(text).should('have.value', text);
     });
     
-    // สร้างคำสั่งเพิ่มเติมใน Cypress เพื่อตรวจสอบการแจ้งเตือนตาม XPath
     Cypress.Commands.add('checkAlertByXPath', (xpathToElement, expectedText) => {
         cy.xpath(xpathToElement).should('have.text', expectedText);
     });
@@ -232,55 +220,39 @@ describe('Test HTTP requests', () => {
 
     it('Test Case 3 : Test HTTP requests of POST - 1', () => {
         cy.request('https://jsonplaceholder.cypress.io/users?_limit=1')
-            .its('body.0') // yields the first element of the returned list
+            .its('body.0') 
             .then((user) => {
                 expect(user).property('id').to.be.a('number')
-                // make a new post on behalf of the user
                 cy.request('POST', 'https://jsonplaceholder.cypress.io/posts', {
                 userId: user.id,
-                title: 'Cypress Test Runner',
-                body: 'Fast, easy and reliable testing for anything that runs in a browser.',
+                title: 'Cypress Test',
+                body: 'Cypress Test, 0Test1230.',
                 })
             })
-            // note that the value here is the returned value of the 2nd request
-            // which is the new post object
             .then((response) => {
-                expect(response).property('status').to.equal(201) // new entity created
+                expect(response).property('status').to.equal(201)
                 expect(response).property('body').to.contain({
-                title: 'Cypress Test Runner',
+                title: 'Cypress Test',
                 })
-                // we don't know the exact post id - only that it will be > 100
-                // since JSONPlaceholder has built-in 100 posts
                 expect(response.body).property('id').to.be.a('number')
                 .and.to.be.gt(100)
-                // we don't know the user id here - since it was in above closure
-                // so in this test just confirm that the property is there
                 expect(response.body).property('userId').to.be.a('number')
             })
     });
 
     it('Test Case 4 : Test HTTP requests of POST - 2', () => {
         cy.request('https://jsonplaceholder.cypress.io/users?_limit=1')
-            .its('body.0') // yields the first element of the returned list
-            .as('user') // saves the object in the test context
+            .its('body.0')
+            .as('user')
             .then(function () {
-                // NOTE 👀
-                //  By the time this callback runs the "as('user')" command
-                //  has saved the user object in the test context.
-                //  To access the test context we need to use
-                //  the "function () { ... }" callback form,
-                //  otherwise "this" points at a wrong or undefined object!
                 cy.request('POST', 'https://jsonplaceholder.cypress.io/posts', {
                 userId: this.user.id,
-                title: 'Cypress Test Runner',
-                body: 'Fast, easy and reliable testing for anything that runs in a browser.',
+                title: 'Cypress Test',
+                body: 'Cypress Test, 0Test1230.',
                 })
-                .its('body').as('post') // save the new post from the response
+                .its('body').as('post')
             })
             .then(function () {
-                // When this callback runs, both "cy.request" API commands have finished
-                // and the test context has "user" and "post" objects set.
-                // Let's verify them.
                 expect(this.post, 'post has the right user id')
                 .property('userId').to.equal(this.user.id)
             })
@@ -291,7 +263,6 @@ describe('Test HTTP requests', () => {
     });
 
     it('Test Case 6 : Test HTTP requests of PUT - 1', () => {
-          // JSON body ที่คุณต้องการส่งใน PUT request
         const requestBody = {
             "id": 1,
             "title": "Updated Title",
@@ -299,22 +270,18 @@ describe('Test HTTP requests', () => {
             "userId": 1
         };
 
-        // ส่ง HTTP PUT request พร้อมกับ JSON body
         cy.request({
             method: 'PUT',
             url: 'https://jsonplaceholder.typicode.com/posts/1',
-            body: requestBody, // เพิ่ม JSON body ที่คุณต้องการส่ง
+            body: requestBody,
             headers: {
-            'Content-Type': 'application/json', // ระบุ Content-Type เป็น JSON
+            'Content-Type': 'application/json',
             },
         })
         .then((response) => {
-            // ตรวจสอบสถานะของการ PUT (ควรเป็น 200 ถ้าสำเร็จ)
             expect(response.status).to.equal(200);
 
-            // ตรวจสอบข้อมูลใน response body (อาจต้องปรับแต่งตาม API ที่ใช้)
             expect(response.body).to.deep.equal(requestBody);
-            // expect(response.body).to.deep.include({ "id": 1 });
         });
     });
 
@@ -329,16 +296,14 @@ describe('Test HTTP requests', () => {
         cy.request({
             method: 'DELETE',
             url: 'https://jsonplaceholder.typicode.com/posts/1',
-            body: requestBody, // เพิ่ม JSON body ที่คุณต้องการส่ง
+            body: requestBody,
             headers: {
-            'Content-Type': 'application/json', // ระบุ Content-Type เป็น JSON
+            'Content-Type': 'application/json',
             },
         })
         .then((response) => {
-            // ตรวจสอบสถานะของการ DELETE (ควรเป็น 200 หรือ 204 ถ้าสำเร็จ)
             expect(response.status).to.be.oneOf([200, 204]);
 
-            // ตรวจสอบข้อความใน response body (จะอยู่ใน response.body)
             expect(response.body).to.deep.equal({});
         });
     });
