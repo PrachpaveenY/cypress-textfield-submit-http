@@ -40,4 +40,4 @@
 
  </br></br>
 
-<img src="./img/cypress-2023-10-04 001302.png" width="900" hight="400"/>
+<img src="./img/cypress-2023-10-04 001302.png" width="400" hight="400"/>
